@@ -21,7 +21,18 @@ func snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 // create snippet handler func
+// add POST only method to snippetCreate handler
 func snippetCreate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		// Add allow: POST to the header map
+		w.Header().Set("Allow", http.MethodPost) // use MethodPost instead of "POST"
+		// must call writeheader before write to send non-200 status code
+		// w.WriteHeader(405)
+		// w.Write([]byte("Method Not Allowed"))
+		// use this http.Error instead
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed) // use statusMethodNotAllowed instead of 405
+		return
+	}
 	w.Write([]byte("Create a new snippet..."))
 }
 
@@ -30,7 +41,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snipper/create", snippetCreate)
+	mux.HandleFunc("/snippet/create", snippetCreate)
 	// establish a web server and listen for incoming requests
 	err := http.ListenAndServe(":4000", mux)
 	log.Fatal(err)
