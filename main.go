@@ -19,6 +19,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 // snippet view handler func
 func snippetView(w http.ResponseWriter, r *http.Request) {
+	//get query from request and check if it's a positive num and parse responseWriter to fprintf
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
